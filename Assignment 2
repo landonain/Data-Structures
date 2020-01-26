@@ -1,0 +1,166 @@
+<fieldset>
+  <legend>Assignment 2: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Size of Array:
+        <input type='textbox' id='size' value='100' />
+      </td>
+      <td>
+        <button id='create' onclick="createArray((document.getElementById('size').value));" value="2">
+          Create Array
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Number to be inserted:
+        <input type='textbox' id='value' value='10' />
+      </td>
+      <td>
+        <button id='insert' onclick="InsertIntoArray
+            ((document.getElementById('index').value),
+            (document.getElementById('value').value), 
+            (document.getElementById('size').value));" value="25">
+          Insert Into Array</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Index of Array:
+        <input type='textbox' id='index' value='1' />
+      </td>
+      <td>
+        <button onclick="searchArray((document.getElementById('search').value),
+                              (document.getElementById('size').value)); ">Search Array</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Search Array:
+        <input type='textbox' id='search' value='25' />
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='outputArray'></div>
+  </tr>
+  <br />
+  <tr>
+    <div id='outputIndex'></div>
+  </tr>
+  <br />
+  <tr>
+    <div id='outputSearch'></div>
+  </tr>
+</table>
+
+let myArray = [1000];
+let myOutput = "";
+let myOutputSearch = "";
+let myOutputInsert = "";
+let arrayTemporary = 0;
+let arrayTemporary2 = 0;
+let arrayLocation = 0;
+let inCounter = 0;
+let seaCounter = 0;
+let arrayItemFound = false;
+
+function searchArray(value, arraySize) {
+  //making local to clear the counter
+  clearArray();
+  //for loop that goes over the entire array and then matches the value
+  //counter is for time complexity
+  for (let i = 0; i < arraySize; ++i) {
+    seaCounter += 1;
+    if (myArray[i] == value) {
+      arrayLocation = i;
+      arrayItemFound = true;
+      myOutputSearch = `Value ${value} found at location ${arrayLocation + 1} 
+    		there were ${seaCounter} comparison operations performed. The time complexity of this algorithm is O(n).` ;
+  		document.getElementById("outputSearch").innerHTML = (myOutputSearch);
+      showArray();
+      break;
+    }
+  }
+  //Using `` allows variables to be baked into the string for ease of use
+  if (arrayItemFound == false){
+    myOutputSearch = `Value ${value} was not found in the array there were ${seaCounter} comparison operations performed. The time complexity of this algorithm is O(n).`
+    document.getElementById("outputSearch").innerHTML = (myOutputSearch);
+    showArray();
+	}
+}
+
+function InsertIntoArray(index, value, arraySize) {
+  clearArray();
+  for (let i = 0; i < arraySize; ++i) {
+    if (i == index - 1) {
+      //here we swap the current value of the array to a temporary holder for transfer
+      arrayTemporary = myArray[i]
+      myArray[i] = (value);
+      inCounter += 1;
+    } else if (i > index - 1) {
+      /*Then we transfer the first temporary value that was stored from the if statement above
+      into the array for storage. Then we store our temporary value back to the first placeholder.
+      The arrays first value gets stored for holding. Then the value from the previous index is pushed to 
+      the current array value. Then we transfer the first value into storage to repeat the process for the next part of the array*/
+      arrayTemporary2 = myArray[i];
+      myArray[i] = arrayTemporary;
+      arrayTemporary = arrayTemporary2;
+      inCounter += 1;
+    }
+  }
+  myOutputInsert = `Value ${value} inserted at location ${index} 
+  there were ${inCounter} operations performed. The time complexity of this algorithm is O(n).`;
+  document.getElementById("outputIndex").innerHTML = (myOutputInsert);
+  showArray();
+}
+
+function createArray(arraySize) {
+  clearArray();
+  for (let i = 0; i < arraySize; ++i) {
+    myArray[i] = (Math.floor(Math.random() * 100) + 1);
+  }
+  showArray();
+}
+
+function showArray() {
+  let arraySize = parseInt(document.getElementById('size').value);
+  for (var i = 0; i < arraySize; ++i) {
+    //myOutput += i + 1 + ' : ' + myArray[i] + "<br/>";
+    myOutput += myArray[i];
+    if (i == 25) {
+      myOutput += ",<br/>";
+    } else if (i == 50) {
+      myOutput += ",<br/>";
+    } else if (i == 75) {
+      myOutput += ",<br/>";
+    } else if (i < arraySize - 1) {
+      myOutput += ", ";
+    }
+  }
+  document.getElementById("outputArray").innerHTML = (myOutput);
+}
+
+function clearArray() {
+  myOutput = "";
+  myOutputSearch = '';
+  myOutputInsert = '';
+  inCounter = 0;
+  seaCounter = 0;
+  arrayItemFound = false;
+  //document.getElementById("outputSearch").innerHTML = ("");
+  //document.getElementById("outputIndex").innerHTML = ("");
+  document.getElementById("outputArray").innerHTML = ("");
+}
+
+fieldset{
+  box-sizing: border-box;
+  float: flex;
+}
+table{
+  box-sizing: border-box;
+  float: flex;
+}

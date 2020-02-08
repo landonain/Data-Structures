@@ -1,0 +1,100 @@
+#HTML Code Below this LINE
+<fieldset>
+  <legend>Assignment 3: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Value for the computer to guess:
+        <input type='textbox' id='guess' value='100' />
+      </td>
+      <td>
+        <button id='create' onclick="guess((document.getElementById('guess').value));" value="2">
+          Send number
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+</table>
+#Javascript Code Below this Line
+var array = [1000];
+var pcGuess = 0;
+var pcGuessCounter = 0;
+var midPoint = 0;
+
+function getMidPoint(begin, end, number) {
+  //Finding the midpoint wasn't easy - adding the results was the best method to find the answer
+  //my algorithm had trouble finding 1 and 1000. I had to include logical clauses for the correct output
+  let combo = (end + begin);
+  if (number == 1) {
+    midPoint = Math.floor(combo / 2);
+    pcGuess = midPoint;
+  } else if (number == 1000) {
+    midPoint = Math.ceil(combo / 2);
+    pcGuess = midPoint;
+  } else if (number > 1 && number < 1000) {
+    midPoint = Math.floor(combo / 2);
+    pcGuess = midPoint;
+  }
+}
+
+function guess(userNumber) {
+  //This is checking for the correct value from the user. If anything that is outside of 1-1000 is passed to the function it 
+  //to clear if a user inputs an incorrect string after searching correctly
+  createArray();
+  //returns output asking for the correct input from the user again.
+  if (userNumber >= 1 && userNumber <= 1000) {
+    //creating array and clearing the counters for outside variables
+    createArray();
+    var arrayEnd = array.length;
+    var arrayBegin = array[0];
+    //debugger; I had to test this many, many, many times.
+    //Logical method for keeping the loop running until the pc matches the number
+    while (pcGuess != userNumber) {
+      //This logic is for the first iteration of the loop where pcGuess is not set by the function yet
+      if (pcGuess == 0) {
+        getMidPoint(arrayBegin, arrayEnd, userNumber);
+        pcGuessCounter += 1;
+        //Halves the array removing the lower set of the array example 1-500
+      } else if (pcGuess < userNumber) {
+        var myOutputSearch = `Guessed ${pcGuess} - too low trying again. Number range is ${arrayBegin}-${arrayEnd}`
+        document.getElementById("output").innerHTML += (myOutputSearch + "<br>");
+        arrayBegin = midPoint;
+        getMidPoint(arrayBegin, arrayEnd, userNumber);
+        pcGuessCounter += 1;
+        //Halves the array removing the upper set of the array example 500-1000
+      } else if (pcGuess > userNumber) {
+        var myOutputSearch = `Guessed ${pcGuess} - too high trying again. Number range is ${arrayBegin}-${arrayEnd}`
+        document.getElementById("output").innerHTML += (myOutputSearch + "<br>");
+        arrayEnd = midPoint;
+        getMidPoint(arrayBegin, arrayEnd, userNumber);
+        pcGuessCounter += 1;
+      }
+    }
+    //output for finding number
+    var myOutputSearch = `Guessed ${pcGuess} - Got it!`
+    document.getElementById("output").innerHTML += (myOutputSearch + "<br>");
+    var myOutputSearch = `It too me ${pcGuessCounter} Tries`
+    document.getElementById("output").innerHTML += (myOutputSearch + "<br>");
+  } else if (typeof userNumber === 'string') {
+    var myOutputSearch = `Please input a number within the range of 1-1000, ${userNumber} is not the correct input.`
+    document.getElementById("output").innerHTML += (myOutputSearch + "<br>");
+  }
+}
+
+function createArray() {
+  clearArray();
+  for (var i = 0; i < 1000; ++i) {
+    array[i] = i + 1;
+  }
+}
+
+function clearArray() {
+  pcGuess = 0;
+  pcGuessCounter = 0;
+  document.getElementById("output").innerHTML = ("");
+}

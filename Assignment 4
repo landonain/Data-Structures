@@ -1,0 +1,121 @@
+#HTML Code below this line
+
+
+<fieldset>
+  <legend>Assignment 4: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Doubly Linked List
+        <input type='textbox' id='nodeValue' value='100' />
+      </td>
+      <td>
+        <button id='button' onclick="addNode();" value="2">
+          Send number
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+</table>
+
+#Javascript code below this line
+
+function LinkedList() {
+	this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+function Node() {
+	this.next = null;
+  this.prev = null;
+  this.content = null;
+  this.id = null;
+}
+
+
+
+
+//_ represents anything that is being passed to the function
+LinkedList.prototype.add = function(_content, _id) {
+	
+  //
+  var node = new Node(); node.content = _content; node.id = _id;
+  
+  //setting the value for the head of the node - this is setup for the first node only
+  if (this.head == null) {
+  	this.head = node; this.length = 1;
+    return node;
+  }
+  
+  //this is to set the value for the tail of the node
+  if (this.tail == null) {
+  	//new node that was created is setting the pointer of the tail to itself
+    this.tail = node;
+    //the tail of the past node is now being referenced in the head of the current node 
+    this.tail.prev = this.head;
+    //the current tail is attached the next method so the next node if it's added can reference it
+    this.head.next = this.tail;
+    //increasing the length ??
+    this.length = 2;
+    //this.id = 2;
+    return node;
+  }
+  //This the setup for the 3rd the node is setup 
+  this.tail.next = node;
+  node.prev = this.tail;
+  this.tail = node;
+  this.length++;
+  return node;
+  
+}
+
+
+
+
+
+LinkedList.prototype.print = function() {
+	if (this.head == null) return "Empty List";
+  var s = "";
+  var node = this.head;
+  while (node != null) {
+  	s += "Content: " + node.content + "<emsp> " + " id: " + node.id +"</br>";
+    node = node.next;
+  }
+  return s;
+}
+
+//calling a new object to use the linkedlist class constructor
+var aList = new LinkedList();
+//global counter for the nodes
+var id = 0;
+//creating the nodes before the user can add anything
+createNode();
+
+function addNode() {
+  var c = document.getElementById("nodeValue").value;
+	//debugger;
+  //passing the users value to the content portion of the node 
+  aList.add(c, id = ++id);
+  //calling the print function to pull the content from the nodes*
+  document.getElementById("output").innerHTML = aList.print();
+}
+
+
+function createNode() {
+	
+	//passing the users value to the content portion of the node
+  var d = ["A","B","C","D","E"];
+  //looping through to create 5 nodes also passing id value that is a global variable
+  for (let i = 0; i < d.length; ++i){
+  	aList.add(d[i], id = ++id);
+  }
+  //calling the print function to pull the content from the nodes*
+  document.getElementById("output").innerHTML = aList.print();
+}
+

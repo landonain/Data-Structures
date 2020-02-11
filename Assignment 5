@@ -1,0 +1,198 @@
+###########HTML below this line
+<fieldset>
+  <legend>Assignment 5: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Stack Calculator
+        <input type='textbox' id='nodeValue' value='100' />
+      </td>
+      <td>
+        <button id='button' onclick="addNode();" value="2">
+          Send number
+        </button>
+      </td>
+      <td>
+        <button id='button2' onclick="popNode();" value="2">
+          Pop the Stack
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+  <tr>
+    <div id='outputBadUser'></div>
+  </tr>
+</table>
+##########Javascipt below this line
+function Node(_content) {
+  this.next = null;
+  this.last = null;
+  this.content = _content;
+
+}
+var Stack = function() {
+  this.head = null;
+  this.top = null;
+  this.length = 0;
+
+  this.push = function(_content) {
+    //debugger;
+    if (_content >= 1 && _content <= 1000) {
+      //No head - create one
+
+      if (this.head == null) {
+        //first creating an instance of a node and adding our users content
+        this.head = new Node(_content);
+        //setting the pointer for the next value to link to the list
+        this.top = this.head;
+        this.length = 1;
+        return this;
+      }
+      //top of the stack now
+      var addedNode = new Node(_content);
+      //previous node's pointer - now the current node has it's own pointer to link it to the bottom
+      addedNode.last = this.top;
+      //providing a pointer to itself
+      this.top.next = addedNode;
+      //setting itself as the top of the stack
+      this.top = addedNode;
+      this.length = 2;
+      return this;
+
+      //logic for numerators will match the symbols and pass the previous values
+      //length is our property that is a check for multiple nodes before calculations
+    } else if (_content == "+" && this.length > 1) {
+      //previous two stacks must be pulled and then the operator must be used between the two values  
+      var add = ((parseInt(this.head.content) + parseInt(this.head.next.content)));
+      //removing the first pointer from the top of the stack -> it points at itself
+      //removing the 2nd pointer that points at the next value
+      this.top = this.top.last;
+      this.top.next = null;
+      //repeating the for the head of the stack
+      this.top = this.head.next;
+      this.top = null;
+
+      //creating a new node for the top of the stack with the results inside
+      this.head = new Node(add);
+      //setting the head of the stack to be the results of the two stacks together
+      this.top = this.head;
+      //this is set to two, resetting as our stack is only 1 after the combination of all 3 stacks
+      this.length = 1;
+      return this;
+
+    } else if (_content == "-" && this.length > 1) {
+
+      var sub = ((parseInt(this.head.content) - parseInt(this.head.next.content)));
+      this.top = this.top.last;
+      this.top.next = null;
+      this.top = this.head.next;
+      this.top = null;
+      this.head = new Node(sub);
+      this.top = this.head;
+      this.length = 1;
+      return this;
+
+    } else if (_content == "*" && this.length > 1) {
+
+      var multiply = ((parseInt(this.head.content) * parseInt(this.head.next.content)));
+      this.top = this.top.last;
+      this.top.next = null;
+      this.top = this.head.next;
+      this.top = null;
+      this.head = new Node(multiply);
+      this.top = this.head;
+      this.length = 1;
+      return this;
+
+    } else if (_content == "/" && this.length > 1) {
+
+      var divide = ((parseInt(this.head.content) / parseInt(this.head.next.content)));
+
+
+      this.top = this.top.last;
+      this.top.next = null;
+
+      this.top = this.head.next;
+      this.top = null;
+
+
+      this.head = new Node(divide);
+      this.top = this.head;
+      this.length = 1;
+      return this;
+
+    }
+
+
+
+    //non number format from user
+    var bad_input = "Please input two numbers from 1-1000 and a math operator to operate stack calculator" + "</br>";
+    return document.getElementById("outputBadUser").innerHTML = (bad_input);
+  }
+  this.pop = function() {
+    if (this.head == null) {
+      alert("The Stack is Empty");
+      return null;
+    }
+    //bottom of the stack doesn't point the other values
+    //without this logic the pop method will error out when trying to overwrite the top.last pointer
+    if (this.top.last == null) {
+      this.head = null;
+      return this;
+    }
+
+
+    //Top of the stack for storage for a return function
+    var a = this.top;
+    //this is removing the pointer that is inside of the top pointing at the node below it
+    //setting it to itself rather than point at the lower node in the stack
+    this.top = this.top.last;
+    //this is the next pointer that is used by stack to find the value of the node being removed
+    //with this gone the node can be over written is empty
+    this.top.next = null;
+
+    return a;
+  }
+  this.toString = function() {
+    var str = "";
+    var node = this.head;
+    //displays the top of the stack
+		var i = 1;
+    while (node != null) {
+      str += "Stack Position: " + i + " Content: " + node.content + "</br>";
+      node = node.next;
+      ++i;
+    }
+    return str;
+  }
+}
+
+var stack = new Stack();
+
+function clearOutput() {
+  //document.getElementById("output").innerHTML = ("");
+  document.getElementById("outputBadUser").innerHTML = ("");
+
+}
+
+function popNode() {
+  clearOutput();
+  stack.pop();
+  //stack.clear();
+  //calling the print function to pull the content from the nodes*
+  document.getElementById("output").innerHTML = stack.toString();
+}
+
+function addNode() {
+  clearOutput();
+  //stack.pop();
+  var c = document.getElementById("nodeValue").value;
+  stack.push(c)
+  //calling the print function to pull the content from the nodes*
+  document.getElementById("output").innerHTML = stack.toString();
+}

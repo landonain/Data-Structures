@@ -1,0 +1,210 @@
+HTML Code below this line!!!
+<fieldset>
+  <legend>Assignment 6: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Queue
+        <input type='textbox' id='nodeValue' value='10' />
+      </td>
+      <td>
+        <button id='button' onclick="addNode();" value="2">
+          Send number
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <td>
+      <div id='output'></div>
+    </td>
+    <td>
+      <div id='output2'></div>
+    </td>
+    <td>
+      <div id='outputBadUser'></div>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+
+  </tr>
+  <tr>
+
+  </tr>
+  <tr>
+
+  </tr>
+</table>
+Javascript below this line
+function Node(_content) {
+  this.next = null;
+  this.last = null;
+  this.content = _content;
+}
+
+
+var Stack = function() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+  this.createNodes = function(_content) {
+    //the length will be my counter for the iterator
+    var userNumberInt = parseInt(_content);
+    var counter = 2;
+    while (counter != userNumberInt) {
+      //No head - create one
+      if (this.head == null) {
+        this.head = new Node(counter);
+        this.tail = this.head;
+        this.length += 1;
+      }
+
+      if (this.tail == null) {
+        counter += 1;
+        var addedNode = new Node(counter);
+        //new node that was created is setting the pointer of the tail to itself
+        this.tail = addedNode;
+        //the tail of the past node is now being referenced in the head of the current node 
+        this.tail.last = this.head;
+        //the current tail is attached the next method so the next node if it's added can reference it
+        this.head.next = this.tail;
+        //increasing the length ??
+        this.length += 1;
+      }
+      counter += 1;
+      var thirdNode = new Node(counter);
+      this.tail.next = thirdNode;
+      thirdNode.last = this.tail;
+      this.tail = thirdNode;
+      this.length += 1;
+    }
+    return this;
+  }
+  this.dequeue = function() {
+    //if you are dequeueing the the end of the queue - will remove the value 
+    //in this case there is no head on the queue
+    if (this.tail.last == null) {
+      var a = this.head
+      this.head = null;
+      return a;
+    }
+    //first of the stack for storage for a return function
+    //removes the first node from the queue and sets the next node in it's place
+    var a = this.head;
+    this.head = this.head.next;
+    this.head.last = null;
+    return a;
+  }
+  this.enqueue = function(content) {
+    //creating the first node with enqueue
+    //technically the beginning is the end of the of an empty queue
+    if (this.head == null) {
+      this.head = new Node(content);
+      this.tail = this.head;
+      this.length += 1;
+      return this;
+    }
+    //adding our content to a new node at the tail of the Queue
+    var addedNode = new Node(content);
+    //setting the pointers for original node
+    this.tail.next = addedNode;
+    //setting the pointers for the new node
+    addedNode.last = this.tail;
+    //replacing the current node at the end of the queue
+    this.tail = addedNode;
+    this.length += 1;
+    return this;
+  }
+  this.toString = function() {
+    var str = "";
+    var node = this.head;
+    var i = 0;
+    while (node != null) {
+      str += node.content + "&nbsp;";
+      node = node.next;
+      ++i;
+    }
+    return str;
+  }
+}
+
+var Q1 = new Stack();
+var Q2 = new Stack();
+
+function outputInfo(iteration) {
+  //logic to output the users values and our Q1 and Q2 sizes and values
+  if (iteration != 0) {
+    document.getElementById("output").innerHTML += "Iteration " + iteration + "&nbsp;&nbsp;&nbsp;&nbsp;" + "Q1: " + Q1.toString();
+    document.getElementById("output").innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;" + "Q2: " + Q2.toString() + "<br/>";
+  }
+  if (iteration == 0) {
+    document.getElementById("output").innerHTML += "User Generated list " + "&nbsp;&nbsp;&nbsp;&nbsp;" + "Q1: " + Q1.toString() + "<br/>";
+  }
+}
+
+function addNode() {
+  //controls the inner loop for steping through the intial node size
+  var counter = 0;
+  //this value will be reset when we grab the first node of each rotation
+  //this allows us to get size as it changes with us adding nodes to the end of Q1
+  var length = Q1.length;
+  //holds the value of the first node for each starting run
+  var firstNode = 0;
+  //controls our first loop to grab the value that will be sent to Q2
+  var grabFirstNode = true;
+  //displays the loop count total
+  var iteration = 0;
+  //pulling user values from the webpage through onclick function
+  var c = document.getElementById("nodeValue").value;
+  //making our user supplied Queue
+  Q1.createNodes(c);
+  //output before logic for primes
+  outputInfo(iteration);
+  iteration++;
+  //Running the Q1 queue until it's empty - 
+  while (Q1.length != counter) {
+    //This is for the scaling size of the length - using this grabfirstnode variable allows me resize the
+    //length of the queue to account for the values being enqueued on the back end of the queue
+    if (grabFirstNode == true) {
+      firstNode = Q1.dequeue();
+      Q2.enqueue(firstNode.content);
+      length = Q1.length;
+      grabFirstNode = false;
+      counter += 1;
+      //the head is removed for the final iteration and value is on the tail end of the queue      
+      if (Q1.head == null) {
+        outputInfo(iteration);
+        return;
+      }
+    }
+    //this controls the loop by accounting for each iterations node length
+    //I manually update each counter value to account for stepping over the nodes
+    if (counter < length) {
+    	//if it's divisble by the firstNode we remove the node
+      if (Q1.head.content % firstNode.content == 0) {
+        Q1.dequeue();
+        counter += 1;
+      }
+      //we stick the value back onto the end of Q1
+      if (counter != length) {
+        var headNode = Q1.head;
+        Q1.dequeue();
+        Q1.enqueue(headNode.content);
+        counter += 1;
+      }
+      //when we reach the end of our list we need to reset and begin the loop again
+      //we keep iterating until Q1 is completely empty
+      if (counter == length) {
+        outputInfo(iteration);
+        iteration++;
+        grabFirstNode = true;
+      }
+    }
+  }
+
+}

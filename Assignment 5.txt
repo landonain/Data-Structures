@@ -28,7 +28,9 @@
     <div id='outputBadUser'></div>
   </tr>
 </table>
-##########Javascipt below this line
+
+
+##########Javascipt below this line!!!!!!!
 function Node(_content) {
   this.next = null;
   this.last = null;

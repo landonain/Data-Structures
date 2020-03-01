@@ -20,6 +20,8 @@
     <div id='output'></div>
   </tr>
 </table>
+
+
 #Javascript Code Below this Line
 var array = [1000];
 var pcGuess = 0;

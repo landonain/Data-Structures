@@ -1,4 +1,6 @@
 HTML Code below this line!!!
+
+
 <fieldset>
   <legend>Assignment 6: Landon Simmons COP3530</legend>
   <table>
@@ -40,7 +42,9 @@ HTML Code below this line!!!
 
   </tr>
 </table>
-Javascript below this line
+
+
+#####Javascript below this line!!!!!
 function Node(_content) {
   this.next = null;
   this.last = null;

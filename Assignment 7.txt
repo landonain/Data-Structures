@@ -1,0 +1,190 @@
+#### HTML Code below this line!!!!
+
+
+<fieldset>
+  <legend>Assignment 7: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Towers of Hanoi
+        <input type='textbox' id='nodeValue' value='5' />
+      </td>
+      <td>
+        <button id='button' onclick="run();" value="2">
+          Calculate Number of moves
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+  <tr>
+    <div id='output2'></div>
+  </tr>
+  <tr>
+    <div id='output3'></div>
+  </tr>
+  <tr>
+    <div id='output4'></div>
+  </tr>
+  <tr>
+    <div id='outputBadUser'></div>
+  </tr>
+</table>
+<p>
+1. The time complexity is O(2^N) for towers of Hanoi recursive algorithm. <br><br>
+2. No I believe we will be alright. The math for priest portion of the Hanoi problem. 2^64 - 1 = 18,446,744,073,709,551,615 steps at one second a step = 307,445,734,561,825,860.25 minutes / 525600 (minutes in a year) = 584,942,417,355.07203243911719939117‬ years
+</p>
+
+
+#### Javascript Code below this line!!!!
+
+
+function Node(_content) {
+  this.next = null;
+  this.last = null;
+  this.content = _content;
+
+}
+var Stack = function() {
+  this.head = null;
+  this.top = null;
+
+  this.push = function(_content) {
+      if (this.head == null) {
+        //first creating an instance of a node and adding our users content
+        this.head = new Node(_content);
+        //setting the pointer for the next value to link to the list
+        this.top = this.head;
+        return this;
+      }
+      //top of the stack now
+      var addedNode = new Node(_content);
+      //previous node's pointer - now the current node has it's own pointer to link it to the bottom
+      addedNode.last = this.top;
+      //providing a pointer to itself
+      this.top.next = addedNode;
+      //setting itself as the top of the stack
+      this.top = addedNode;
+      return this;
+    }
+  this.pop = function() {
+    if (this.head == null) {
+      alert("The Stack is Empty");
+      return null;
+    }
+    //bottom of the stack doesn't point the other values
+    //without this logic the pop method will error out when trying to overwrite the top.last pointer
+    if (this.top.last == null) {
+      this.head = null;
+      return this;
+    }
+    //Top of the stack for storage for a return function
+    var a = this.top;
+    //this is removing the pointer that is inside of the top pointing at the node below it
+    //setting it to itself rather than point at the lower node in the stack
+    this.top = this.top.last;
+    //this is the next pointer that is used by stack to find the value of the node being removed
+    //with this gone the node can be over written is empty
+    this.top.next = null;
+
+    return a;
+  }
+  this.toString = function() {
+    var str = "";
+    var node = this.head;
+    while (node != null) {
+    	if (node.next == null){
+      	str += node.content 
+      	return str;
+ 			}
+      str += node.content + ", ";
+      node = node.next;
+    }
+  }
+}
+function outputStacks(){
+	document.getElementById("output").innerHTML += "Stack A: " + stackA.toString()+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      document.getElementById("output").innerHTML += "Stack B: " + stackB.toString()+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      document.getElementById("output").innerHTML += "Stack C: " + stackC.toString()+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      document.getElementById("output").innerHTML += "Move Counter: " + moveCounter+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      document.getElementById("output").innerHTML += "<br>";
+      document.getElementById("output").innerHTML += "<br>";
+      document.getElementById("output").innerHTML += "<br>";
+      document.getElementById("output").innerHTML += "<br>";
+}
+
+function clearOutput() {
+  //document.getElementById("output").innerHTML = ("");
+  moveCounter = 0;
+  document.getElementById("outputBadUser").innerHTML = ("");
+
+}
+
+
+function popNode() {
+  clearOutput();
+  stack.pop();
+  //stack.clear();
+  //calling the print function to pull the content from the nodes*
+  document.getElementById("output").innerHTML = stack.toString();
+}
+function move(A, B){
+	var contentHolder = A.top.content
+  B.push(contentHolder);
+  A.pop();
+}
+
+function runHanoi(Z, A, B, C, outputStacks){
+		debugger;
+		if (Z == 1)
+    {
+    	move(A,B);
+      ++moveCounter;
+      //outputStacks();
+    }
+    else
+    {
+    	runHanoi (Z - 1, A, C, B, outputStacks)
+      	move(A,B);
+        ++moveCounter;
+        //outputStacks();
+      	runHanoi (Z - 1, C, B, A, outputStacks)
+        //document.getElementById("output").innerHTML += "Stack A: " + A.toString()+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      //document.getElementById("output").innerHTML += "Stack B: " + B.toString()+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      //document.getElementById("output").innerHTML += "Stack C: " + C.toString()+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      //document.getElementById("output").innerHTML += "Move Counter: " + moveCounter+ "&nbsp;&nbsp;&nbsp;&nbsp;";
+      //document.getElementById("output").innerHTML += "<br>";
+      //document.getElementById("output").innerHTML += "<br>";
+      //document.getElementById("output").innerHTML += "<br>";
+      //document.getElementById("output").innerHTML += "<br>";
+    }
+
+}
+
+var moveCounter = 0;
+var stackA = new Stack();
+var stackB = new Stack();
+var stackC = new Stack();
+
+function run(){
+	clearOutput();
+  var v = document.getElementById("nodeValue").value;
+  for (let i = v; i > 0; --i){stackA.push(i);}
+  document.getElementById("output").innerHTML +="Before Algorythm: &nbsp;&nbsp;&nbsp;&nbsp;";
+  outputStacks();
+  if (v > 1 && v < 8) {
+  	runHanoi(v, stackA,stackB,stackC, outputStacks);
+  }
+  
+    if (v >= 8) {
+  	document.getElementById("output").innerHTML ="Input is too high try a value from 1-7";
+  }
+  document.getElementById("output").innerHTML +="After Algorythm: &nbsp;&nbsp;&nbsp;&nbsp;";
+  outputStacks();
+  //calling the print function to pull the content from the nodes*
+
+}

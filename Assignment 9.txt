@@ -1,0 +1,122 @@
+##### HTML Code Below this line!!!!!
+<form id="form">Enter Phrase.
+    <br>
+    <textarea id='phrase' rows='10' cols='50'>I want what I want and I know what I want.</textarea>
+    <br>
+    <input type="button" value="Parse Phrase" id="parse" onClick='parsePhrase();'>
+</form>
+<div id="output"></div>
+
+
+
+
+##### JAVASCRIPT Code below this line!!!!
+
+var hashTable = new HashTable(); // Global
+var bins = new LinkedList();
+LinkedList.prototype.print = function(c) {
+  if (this.head == null) return "Empty List";
+  var s = "";
+  var node = this.head;
+  while (node != null) {
+    s += node.id + ": " + node.content + "<br>";
+    node = node.next;
+  }
+  return s;
+}
+LinkedList.prototype.add = function(_content, _id) {
+  var node = new Node();
+  node.content = _content;
+  node.id = _id;
+
+  //setting the value for the head of the node - this is setup for the first node only
+  if (this.head == null) {
+    this.head = node;
+    ++this.length;
+    return node;
+  }
+
+  //this is to set the value for the tail of the node
+  if (this.tail == null) {
+    //new node that was created is setting the pointer of the tail to itself
+
+    this.tail = node;
+    this.tail.prev = this.head;
+    //the current tail is attached the next method so the next node if it's added can reference it
+    this.head.next = this.tail;
+    //increasing the length ??
+    ++this.length;
+    return node;
+  }
+  //This the setup for the 3rd the node is setup 
+  this.tail.next = node;
+  node.prev = this.tail;
+  this.tail = node;
+  //++node.id;
+  this.length++;
+  return node;
+}
+
+function parsePhrase() {
+  var phrase = document.getElementById('phrase').value;
+  var phraseAsStringArray = phrase.split(' ');
+  var len = phraseAsStringArray.length;
+
+  for (var i = 0; i < len; i++) {
+  	//removing the last value of a string if it matches any of the punctuation below
+    var test = phraseAsStringArray[i];
+    test = test.includes(".") || test.includes("!") || test.includes("?") || test.includes(",");
+    if ( test == true){
+    	var string = phraseAsStringArray[i];
+    	phraseAsStringArray[i] = string.substring(0, string.length -1);
+    }
+    hashTable.addWord(phraseAsStringArray[i], i + 1);
+  }
+  document.getElementById("output").innerHTML = bins.print();
+}
+
+function HashTable() {
+
+  this.addWord = function(word, index) {
+    
+   	//bins is our list that will store the words and indexes
+    var node = bins.head
+
+		//looping through the list to check for already existing words in the list
+    while (node != null) {
+      if (node.id == word) {
+        this.addExistingWord(index, word, node)
+        return word;
+      }
+      node = node.next
+    }
+    //adds new word to the bins list
+    this.addNewWord(index, word)
+    return word;   
+  };
+  this.addNewWord = function(index, word) {
+    //the index is passed as the content as adding to it as a string is easier 
+    //the word itself is contained in the ID as well
+    bins.add(index, word)
+    return word;
+  };
+
+  this.addExistingWord = function(index, word, node) {
+    // Adds Word to structure that already exists
+    node.content += ", " + index;
+    return word;
+  };
+}
+
+function LinkedList() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+function Node() {
+  this.next = null;
+  this.prev = null;
+  this.content = null;
+  this.id = null;
+}

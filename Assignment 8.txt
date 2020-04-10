@@ -1,0 +1,272 @@
+######HTML Code below this line
+<fieldset>
+  <legend>Assignment 4: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Doubly Linked List
+        <input type='textbox' id='nodeValue' value='100' />
+      </td>
+      <td>
+        <button id='button' onclick="createNode();" value="2">
+          Create Randomized String List
+        </button>
+      </td>
+      <td>
+        <button id='button5' onclick="bubbleSort();" value="2">
+          Bubble Sort Algorithm
+        </button>
+      </td>
+      <td>
+        <button id='button2' onclick="mergeNode();" value="2">
+          Merge Sort Algorithm
+        </button>
+      </td>
+      <td>
+        <button id='button1' onclick="addNode();" value="2">
+          Add Value and Sort with Bubble Sort
+        </button>
+      </td>
+
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+</table>
+##### Javascript Code below this line !!!!
+
+function LinkedList() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+function Node() {
+  this.next = null;
+  this.prev = null;
+  this.content = null;
+  this.id = null;
+}
+
+function merge_sort(list) {
+  if (list.length <= 1) return list;
+
+  var mid = list.length / 2;
+  var left = new LinkedList();
+  var right = new LinkedList();
+
+  var index = 1;
+  var node = list.head
+
+  while (node != null) {
+    if (index <= mid) {
+      left.add(node.content);
+    } else {
+      right.add(node.content);
+    }
+    index++;
+    node = node.next;
+  }
+  //document.getElementById("output").innerHTML += "Left side "+ left.print() + "Right Side" + right.print() + "</br>";
+  left = merge_sort(left);
+  //document.getElementById("output").innerHTML += "Left side "+ left.print() + "Right Side" + right.print() + "</br>";
+  right = merge_sort(right);
+  //document.getElementById("output").innerHTML += "Left side "+ left.print() + "Right Side" + right.print() + "</br>";
+
+  return merge(left, right);
+}
+
+function merge(left, right) {
+  var result = new LinkedList()
+  while ((left.length > 0) && (right.length > 0)) {
+    if (left.head.content <= right.head.content) {
+      result.push(left.dequeue().content);
+
+    } else {
+      result.push(right.dequeue().content);
+    }
+
+  }
+  while (left.length > 0) {
+    result.push(left.dequeue().content);
+  }
+  while (right.length > 0) {
+    result.push(right.dequeue().content);
+  }
+  //document.getElementById("output").innerHTML = result.print();
+  return result;
+}
+
+function swap(a, b) {
+  //swapping outside of the function to ensure that changes are made to the global list and not the local list
+  //my swaps were occuring without changing the global list before.
+  var temp = b.content;
+  b.content = a.content;
+  a.content = temp;
+  return this;
+}
+
+function addNode() {
+  var c = document.getElementById("nodeValue").value;
+  //passing the users value to the content portion of the node 
+  aList.add(c);
+  aList.bubbleSort();
+  document.getElementById("output").innerHTML += "Adding User value and running Bubble sort: " + aList.print(c) + "<br>" + "<br>" + "<br>";
+}
+
+function bubbleSort() {
+  aList.bubbleSort();
+  document.getElementById("output").innerHTML += "Bubble Sorted List result: " + aList.print() + "<br>" + "<br>" + "<br>";
+}
+
+function mergeNode() {
+  merge_sort(aList);
+  document.getElementById("output").innerHTML += "Merge Sort List result: " + aList.print() + "<br>" + "<br>" + "<br>";
+}
+
+function createNode() {
+  var charSet = "ABCEDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  var d = 100;
+  for (let i = 0; i < d; ++i) {
+    var charStuff = (charSet.charAt(Math.random() * 37))
+    var charStuff2 = (charSet.charAt(Math.random() * 37))
+    var charStuff3 = (charSet.charAt(Math.random() * 37))
+    var charStuff4 = charStuff + charStuff2 + charStuff3
+    aList.add(charStuff4);
+  }
+  document.getElementById("output").innerHTML = "Unsorted List result: " + aList.print() + "<br>" + "<br>" + "<br>";
+
+}
+
+
+LinkedList.prototype.bubbleSort = function() {
+  var node = this.head;
+  var counter = 0;
+  var swapped = false;
+  while (node != null) {
+    if (node.content > node.next.content) {
+      swap(node, node.next);
+      swapped = true;
+      counter++;
+    }
+    node = node.next;
+    counter++
+    if (node.next == null && swapped == false) {
+      return this;
+    }
+    if (node.next == null) {
+      node = this.head;
+      swapped = false
+      counter = 0;
+    }
+  }
+}
+LinkedList.prototype.add = function(_content, _id) {
+
+  //
+  var node = new Node();
+  node.content = _content;
+  node.id = _id;
+
+  //setting the value for the head of the node - this is setup for the first node only
+  if (this.head == null) {
+    this.head = node;
+    ++this.length;
+    return node;
+  }
+
+  //this is to set the value for the tail of the node
+  if (this.tail == null) {
+    //new node that was created is setting the pointer of the tail to itself
+
+    this.tail = node;
+    this.tail.prev = this.head;
+    //the current tail is attached the next method so the next node if it's added can reference it
+    this.head.next = this.tail;
+    //increasing the length ??
+    ++this.length;
+    return node;
+  }
+  //This the setup for the 3rd the node is setup 
+  this.tail.next = node;
+  node.prev = this.tail;
+  this.tail = node;
+  //++node.id;
+  this.length++;
+  return node;
+}
+LinkedList.prototype.dequeue = function() {
+  if (this.head == null) {
+    alert("The Stack is Empty");
+    return null;
+  }
+  if (this.head.next == null) {
+    var a = this.head;
+    this.tail = null;
+    this.head = null;
+    //this.head.prev = null;
+    this.length = 0;
+    return a;
+  }
+  //Top of the stack for storage for a return function
+  var a = this.head;
+  this.head.next.prev = null;
+  this.length--;
+  //this is removing the pointer that is inside of the top pointing at the node below it
+  //setting it to itself rather than point at the lower node in the stack
+  this.head = this.head.next;
+  return a;
+}
+LinkedList.prototype.push = function(_content) {
+  this.add(_content);
+}
+LinkedList.prototype.pop = function() {
+  if (this.head == null) {
+    alert("The Stack is Empty");
+    return null;
+  }
+  if (this.head.next == null) {
+    var a = this.head;
+    this.tail = null;
+    this.head = null;
+    this.length = 0;
+    return a;
+  }
+  var a = this.tail;
+  this.tail = this.tail.prev;
+  //this value is a representation of the length of the list - the 2 accounts for the head and tail both of which 
+  //don't apply to our next count
+  //var endTest = this.length - 2;
+  //var stuff = "this.head";
+  //var nextTimes = ".next";
+  //this multiplies the variable to give us a way to iterate over the list
+  //var variableString = nextTimes.repeat(endTest);
+  //var final = stuff + (variableString);
+  //using this allows a string to be sent as code
+  //this.tail = eval(final);
+  this.length--;
+  this.tail.next = null;
+  return a;
+}
+LinkedList.prototype.print = function(c) {
+  if (this.head == null) return "Empty List";
+  var s = "";
+  var node = this.head;
+  while (node != null) {
+    if (node.content == c) {
+      s += "<strong> User Value Sorted position: " + node.content + "</strong><emsp> ";
+      node = node.next;
+    }
+    if (node.content != c) {
+      s += node.content + "<emsp> ";
+      node = node.next;
+    }
+  }
+  return s;
+}
+
+//calling a new object to use the linkedlist class constructor
+var aList = new LinkedList();

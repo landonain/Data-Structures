@@ -1,0 +1,273 @@
+######HTML Code below this line!!!!!
+
+<fieldset>
+  <legend>Assignment 8: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Doubly Linked List
+        <input type='textbox' id='nodeValue' value='100' />
+      </td>
+      <td>
+        <button id='button' onclick="createNode();" value="2">
+          Create Randomized String List
+        </button>
+
+  
+        <button id='button6' onclick="quickSort();" value="2">
+          Sort the values with Quick Sort
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+  <tr>
+    <div id='output1'></div>
+  </tr>
+  <tr>
+    <div id='output2'></div>
+  </tr>
+</table>
+###### Javascript Below this line!!!
+
+function LinkedList() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+function Node() {
+  this.next = null;
+  this.prev = null;
+  this.content = null;
+  this.id = null;
+}
+
+
+LinkedList.prototype.quickSort = function(list, left, right) {
+  if (left >= right) {
+    return;
+  }
+  var pivot = (left + right) / 2;
+  var index = partition(list, left, right, pivot);
+  quickSort(list, left, index - 1);
+  quickSort(list, index, right);
+
+  /*var pivot = 0,
+    s = 0,
+    median = 0,
+    range = 3;
+  var node = this.head, 
+    endNode = this.tail,
+    list = this;
+
+  //getting a total of our middle node
+  s = totalNodeContentValue(node, s);
+  //node needs to be reset
+  node = this.head;
+  //dividing by the total nodes content and the length 
+  median = Math.floor(s / this.length);
+  
+  //iterating through the node list by increments of 3 to find the node that is closest to the median
+  pivot = pivotValue (node, median, pivot, range, list)
+  //output for user verification
+  
+  //reset as the node is some where crazy after looking for pivot
+  node = this.head
+  
+  //var pivot = node.content;
+  document.getElementById("output2").innerHTML += "The pivot is " + pivot + ". The median is " + median;
+  partition(pivot, node, endNode, list);
+  document.getElementById("output").innerHTML = list.print();
+  partition(pivot, node, endNode, list);
+  document.getElementById("output").innerHTML = list.print();
+  */
+  //quickSort();
+  //quickSort(index, endNode);
+
+}
+
+function totalNodeContentValue(node, s) {
+  while (node != null) {
+    s += parseInt(node.content);
+    node = node.next;
+  }
+  return s;
+}
+
+function pivotValue(node, median, pivot, range, list) {
+  //outer loop to control iteration - keeps going until pivot has a value
+  while (pivot == 0) {
+    //inner loop that is controlling how many times the pc checks that nodes content
+    var numberRange = 1;
+    //exact match 
+    if (node.content == median) {
+      pivot = node.content;
+      return pivot;
+    }
+    //range of numbers each time this misses the range increases by 5
+    while (numberRange <= range) {
+      if (node.content == median - numberRange || node.content == median + numberRange) {
+        pivot = node.content;
+        return pivot;
+      }
+      numberRange++;
+    }
+    node = node.next;
+    //if the node reaches the end of the list and needs to start over
+    if (node.next == null) {
+
+      node = list.head;
+      range += 3;
+    }
+  }
+}
+
+function partition(list, left, right, pivot) {
+
+  var i = 0,
+    j = list.length;
+  debugger;
+  while (left < right) {
+    while (stuff < pivot) {
+      i++;
+      node = node.next;
+    }
+
+    while (endNode.content > pivot) {
+      j--;
+      endNode = endNode.prev;
+    }
+    if (i <= j) {
+      swap(node, endNode);
+      i++;
+      node = node.next;
+      endNode = endNode.prev;
+      j--;
+    }
+  }
+  /*while (i <= j) {
+    do {
+      i++;
+      if (i > 1){
+      	node = node.next;
+      }
+    } while (node.content < pivot);
+    do {
+      j--;
+      if (j < list.length - 1){
+      	endNode = endNode.prev
+      }
+      
+    } while (endNode.content > pivot);
+    if (i < j) {
+      swap(node, endNode);
+    }
+  }*/
+}
+
+function swap(a, b) {
+  //swapping outside of the function to ensure that changes are made to the global list and not the local list
+  //my swaps were occuring without changing the global list before.
+  var temp = b.content;
+  b.content = a.content;
+  a.content = temp;
+  return this;
+}
+
+
+LinkedList.prototype.add = function(_content, _id) {
+
+  //
+  var node = new Node();
+  node.content = _content;
+  node.id = _id;
+
+  //setting the value for the head of the node - this is setup for the first node only
+  if (this.head == null) {
+    this.head = node;
+    ++this.length;
+    return node;
+  }
+
+  //this is to set the value for the tail of the node
+  if (this.tail == null) {
+    //new node that was created is setting the pointer of the tail to itself
+
+    this.tail = node;
+    this.tail.prev = this.head;
+    //the current tail is attached the next method so the next node if it's added can reference it
+    this.head.next = this.tail;
+    //increasing the length ??
+    ++this.length;
+    return node;
+  }
+  //This the setup for the 3rd the node is setup 
+  this.tail.next = node;
+  node.prev = this.tail;
+  this.tail = node;
+  //++node.id;
+  this.length++;
+  return node;
+}
+LinkedList.prototype.print = function() {
+  if (this.head == null) return "Empty List";
+  var s = "";
+  var node = this.head;
+  while (node != null) {
+    s += "Content: " + node.content + "<emsp> " + "</br>";
+    node = node.next;
+  }
+  return s;
+}
+
+//calling a new object to use the linkedlist class constructor
+var aList = new LinkedList();
+
+
+
+
+function addNode() {
+  debugger;
+  var c = document.getElementById("nodeValue").value;
+  //passing the users value to the content portion of the node 
+  aList.add(c);
+  aList.bubbleSort();
+  document.getElementById("output").innerHTML = aList.print();
+}
+
+
+
+function quickSort() {
+  aList.quickSort();
+  document.getElementById("output").innerHTML = aList.print();
+}
+
+function createNode() {
+  debugger;
+  var charSet = "ABCEDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  var d = 6;
+  var id = 0;
+  for (let i = 0; i < d; ++i) {
+    //var charStuff = (charSet.charAt(Math.random() * 37))
+    //var charStuff2 = (charSet.charAt(Math.random() * 37))
+    //var charStuff3 = (charSet.charAt(Math.random() * 37))
+    //var charStuff4 = charStuff + charStuff2 + charStuff3
+    //aList.add(charStuff4);
+    aList.add(i + Math.floor(Math.random() * 100), id = ++id);
+
+  }
+  //aList.add(10);
+  //aList.add(5);
+  //aList.add(1);
+  document.getElementById("output").innerHTML = aList.print();
+  //aList.bubbleSort();
+  //var pivot = aList.quickSort();
+  //calling the print function to pull the content from the nodes*
+  document.getElementById("output").innerHTML = aList.print();
+
+}

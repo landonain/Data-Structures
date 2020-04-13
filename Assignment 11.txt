@@ -1,0 +1,198 @@
+#### HTMl code below this line!!!!
+<fieldset>
+  <legend>Assignment 11: Landon Simmons COP3530</legend>
+  <table>
+    <tr>
+      <td>
+        Enter an number:
+        <input type='text' id='intValue' value='1' />
+      </td>
+      <td>
+        <button id='button1' onclick="checkNode();" value="2">
+          Add Value
+        </button>
+      </td>
+      <td>
+        <button id='button2' onclick="createNode();" value="2">
+          Create List
+        </button>
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<table>
+  <tr>
+    <div id='output'></div>
+  </tr>
+  <tr>
+    <div id='output1'></div>
+  </tr>
+</table>
+#### Javascript code below this line!!!!!
+var aList = new LinkedList();
+LinkedList.prototype.add = function(_content, _id) {
+
+  //
+  var node = new Node();
+  node.content = _content;
+  node.id = _id;
+
+  //setting the value for the head of the node - this is setup for the first node only
+  if (this.head == null) {
+    this.head = node;
+    ++this.length;
+    return node;
+  }
+
+  //this is to set the value for the tail of the node
+  if (this.tail == null) {
+    //new node that was created is setting the pointer of the tail to itself
+
+    this.tail = node;
+    this.tail.prev = this.head;
+    //the current tail is attached the next method so the next node if it's added can reference it
+    this.head.next = this.tail;
+    //increasing the length ??
+    ++this.length;
+    return node;
+  }
+  //This the setup for the 3rd the node is setup 
+  this.tail.next = node;
+  node.prev = this.tail;
+  this.tail = node;
+  //++node.id;
+  this.length++;
+  return node;
+}
+LinkedList.prototype.dequeue = function() {
+  if (this.head == null) {
+    alert("The Stack is Empty");
+    return null;
+  }
+  if (this.head.next == null) {
+    var a = this.head;
+    this.tail = null;
+    this.head = null;
+    //this.head.prev = null;
+    this.length = 0;
+    return a;
+  }
+  //Top of the stack for storage for a return function
+  var a = this.head;
+  this.head.next.prev = null;
+  this.length--;
+  //this is removing the pointer that is inside of the top pointing at the node below it
+  //setting it to itself rather than point at the lower node in the stack
+  this.head = this.head.next;
+  return a;
+}
+LinkedList.prototype.push = function(_content) {
+  this.add(_content);
+}
+LinkedList.prototype.pop = function() {
+  if (this.head == null) {
+    alert("The Stack is Empty");
+    return null;
+  }
+  if (this.head.next == null) {
+    var a = this.head;
+    this.tail = null;
+    this.head = null;
+    this.length = 0;
+    return a;
+  }
+  var a = this.tail;
+  this.tail = this.tail.prev;
+  //this value is a representation of the length of the list - the 2 accounts for the head and tail both of which 
+  //don't apply to our next count
+  //var endTest = this.length - 2;
+  //var stuff = "this.head";
+  //var nextTimes = ".next";
+  //this multiplies the variable to give us a way to iterate over the list
+  //var variableString = nextTimes.repeat(endTest);
+  //var final = stuff + (variableString);
+  //using this allows a string to be sent as code
+  //this.tail = eval(final);
+  this.length--;
+  this.tail.next = null;
+  return a;
+}
+LinkedList.prototype.print = function(c) {
+  if (this.head == null) return "Empty List";
+  var s = "";
+  var node = this.head;
+  while (node != null) {
+    if (node.content == c) {
+      s += "<strong> User Value Sorted position: " + node.content + "</strong><emsp> ";
+      node = node.next;
+    }
+    if (node.content != c) {
+      s += node.content + "<emsp> ";
+      node = node.next;
+    }
+  }
+  return s;
+}
+
+function LinkedList() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+function Node() {
+  this.next = null;
+  this.prev = null;
+  this.content = null;
+  this.id = null;
+}
+
+function checkNode(_content, list) {
+  //pulling values from the user
+  var answer;
+  var c = document.getElementById("intValue").value;
+  //testing for fraction and then pulling changing the value of the parse function
+  var test = c.includes(".")
+  if (test == true) {
+    c = parseFloat(document.getElementById("intValue").value);
+  }
+  if (test != true) {
+    c = parseInt(document.getElementById("intValue").value);
+  }
+  //passing the users value to the content portion of the node 
+  var remainder = 0;
+  var baseNode = "";
+  var nextNode = "";
+  var node = aList.head;
+
+
+  while (node != null) {
+    //the closest number in between -1 and 0 will be the base node
+    //after the base node is established the equation is relatively easy to setup
+    if (node.id - c > -1 && node.id - c < 0) {
+      baseNode = node;
+      remainder = c - baseNode.id;
+      node = node.next;
+      nextNode = node;
+      answer = parseFloat(baseNode.content) + remainder * (parseFloat(nextNode.content) - parseFloat(baseNode.content));
+      answer = answer.toFixed(3);
+      document.getElementById("output1").innerHTML = "Answer " + answer + "<br>" + "<br>" + "<br>";
+      return node;
+    }
+    //if number is exact the answer is much simpler
+    if (node.id == c) {
+      answer = node.content;
+      document.getElementById("output1").innerHTML = "Answer: " + answer + "<br>" + "<br>" + "<br>";
+      return node;
+    }
+    node = node.next;
+  }
+}
+
+function createNode() {
+  //Creating array of numbers for testing the function
+  var arrayValues = ["0.00", ".04", ".11", ".6", ".87", ".95", "1.00"];
+  for (var i = 0; i <= 6; i++) {
+    aList.add(arrayValues[i], i)
+  }
+}
